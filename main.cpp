@@ -2,6 +2,7 @@
 #include <string>
 #include <cmath>
 #include <array>
+#include <algorithm>
 
 #pragma GCC diagnostic ignored "-Wreturn-type"
 
@@ -174,7 +175,11 @@ bool king_algo(array<array<chess_square,8>,8>& board, int c_rank, int c_file, in
 }
 
 bool is_legal(array<array<chess_square,8>,8>& board, int c_rank, int c_file, int f_rank, int f_file) {
-    if (board[c_rank][c_file].mOccupant->mType == piece_names::Pawn) {return pawn_algo(board, c_rank, c_file, f_rank, f_file);}
+    int rank_max{7}, file_max{7}, rank_min{0}, file_min{0};
+    if ((f_rank < rank_min || f_rank > rank_max || f_file < file_min || f_file > file_max)) {return false;}
+    else if ((c_rank < rank_min || c_rank > rank_max || c_file < file_min || c_file > file_max)) {return false;}
+
+    else if (board[c_rank][c_file].mOccupant->mType == piece_names::Pawn) {return pawn_algo(board, c_rank, c_file, f_rank, f_file);}
     else if (board[c_rank][c_file].mOccupant->mType == piece_names::Knight) {return knight_algo(board, c_rank, c_file, f_rank, f_file);}
     else if (board[c_rank][c_file].mOccupant->mType == piece_names::Rook) {return rook_algo(board, c_rank, c_file, f_rank, f_file);}
     else if (board[c_rank][c_file].mOccupant->mType == piece_names::Bishop) {return bishop_algo(board, c_rank, c_file, f_rank, f_file);}
@@ -184,7 +189,7 @@ void board_move(chess_square& present, chess_square& future) {
     if (present.mOccupant == nullptr) {
         cout << "\nError: No piece exsists on this square.";
         return;
-    }
+    } 
     else {
         future.mOccupant = present.mOccupant;
         present.mOccupant = nullptr;
@@ -217,17 +222,15 @@ void user_move(array<array<chess_square,8>,8>& board) {
     int c_file = static_cast<int>(move.at(1)) - 49;
     int f_file = static_cast<int>(move.at(3)) - 49;
 
-    board[c_rank][c_file].board_info();
-    board[f_rank][f_file].board_info();
-
     if (is_legal(board, c_rank, c_file, f_rank, f_file)) {
+        board[c_rank][c_file].board_info();
+        board[f_rank][f_file].board_info();
         board_move(board[c_rank][c_file], board[f_rank][f_file]);
+        board[c_rank][c_file].board_info();
+        board[f_rank][f_file].board_info();
     } else {
         cout << "\n\nThat is not a legal move.";
     }
-    
-    board[c_rank][c_file].board_info();
-    board[f_rank][f_file].board_info();
 
 }
 
@@ -246,10 +249,12 @@ int main () {
     chess_piece black_pawn(piece_names::Pawn, colors::Black);
     chess_piece white_rook(piece_names::Rook, colors::White);
     chess_piece white_bishop(piece_names::Bishop, colors::White);
+    chess_piece white_pawn(piece_names::Pawn, colors::White);
 
     chess_board[3][2].mOccupant = &white_bishop;
     chess_board[5][4].mOccupant = &black_pawn;
     chess_board[4][1].mOccupant = &white_knight;
+    chess_board[1][1].mOccupant = &white_pawn;
 
     user_move(chess_board);
 
