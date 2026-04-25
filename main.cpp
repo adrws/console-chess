@@ -179,6 +179,10 @@ bool is_legal(array<array<chess_square,8>,8>& board, int c_rank, int c_file, int
     if ((f_rank < rank_min || f_rank > rank_max || f_file < file_min || f_file > file_max)) {return false;}
     else if ((c_rank < rank_min || c_rank > rank_max || c_file < file_min || c_file > file_max)) {return false;}
 
+    else if (board[c_rank][c_file].mOccupant == nullptr) {
+        cout << "\nThere is no occupant on the current position";
+        return false;
+    }
     else if (board[c_rank][c_file].mOccupant->mType == piece_names::Pawn) {return pawn_algo(board, c_rank, c_file, f_rank, f_file);}
     else if (board[c_rank][c_file].mOccupant->mType == piece_names::Knight) {return knight_algo(board, c_rank, c_file, f_rank, f_file);}
     else if (board[c_rank][c_file].mOccupant->mType == piece_names::Rook) {return rook_algo(board, c_rank, c_file, f_rank, f_file);}
