@@ -11,6 +11,7 @@ using namespace std;
 enum class ranks {A,B,C,D,E,F,G,H,None};
 enum class colors {White,Black};
 enum class piece_names {Pawn,Rook,Bishop,Knight,Queen,King};
+enum class directions {Right, Left, Up, Down, UpRight, UpLeft, DownRight, DownLeft};
 
 class chess_piece {
     public:
@@ -153,17 +154,39 @@ bool rook_algo(array<array<chess_square,8>,8>& board, int c_rank, int c_file, in
 }
 
 bool bishop_algo(array<array<chess_square,8>,8>& board, int c_rank, int c_file, int f_rank, int f_file) {
-    int delta_r = fabs(f_rank-c_rank);
-    int delta_f = fabs(f_file-c_file);
+    int absdelta_r {fabs(f_rank-c_rank)};
+    int absdelta_f {fabs(f_file-c_file)};
+    int delta_r {f_rank - c_rank};
+    int delta_f {f_file = c_file};
+    int rank_max{7}, rank_min{0}, file_max{7}, file_min{0};
+    directions direction;
 
-    if (delta_r == delta_f) {
-        if (board[f_rank][f_file].mOccupant != nullptr) {
-            if (board[f_rank][f_file].mOccupant->mColor == board[c_rank][c_file].mOccupant->mColor) {return false;}
-            else {return true;}
-        }
-        else {return true;}
-    }
+    if ((absdelta_r == absdelta_f) && (delta_r != 0)) {return true;}
     else {return false;}
+
+    if ((delta_r > 0) && (delta_f > 0)) {
+        direction = directions::UpRight;
+    }
+    else if ((delta_r < 0) && (delta_f < 0)) {
+        direction = directions::DownLeft;
+    }
+    else if ((delta_r > 0) && (delta_f < 0)) {
+        direction = directions::DownRight;
+    }
+    else if ((delta_r < 0) && (delta_f > 0)) {
+        direction = directions::UpLeft;
+    }
+
+    if (direction == directions::UpRight) {
+        int i{c_rank}, j{c_file};
+        for (i; i <= rank_max; i++) {
+            if (board[i][j].mOccupant != nullptr) {
+                if (board[i][j].mOccupant ->mColor == board[c_rank][c_file].mOccupant->mColor) {
+                    
+                }
+            }
+        }
+    }
 }
 
 bool queen_algo(array<array<chess_square,8>,8>& board, int c_rank, int c_file, int f_rank, int f_file) {
